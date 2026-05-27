@@ -1,617 +1,599 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Uma cartinha em forma de enigma</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dia 29</title>
+
   <style>
-    .cipher-table {
-      width: 100%;
-      max-width: 430px;
-      margin: 24px auto;
-      border-collapse: collapse;
-      font-family: 'Courier New', monospace;
-      overflow: hidden;
-      border-radius: 16px;
-      background: rgba(0,0,0,.2);
-    }
-    .cipher-table th, .cipher-table td {
-      padding: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      text-align: center;
-      color: var(--text);
-    }
-    .cipher-table th {
-      color: var(--accent-2);
-      background: rgba(255,255,255,.06);
-    }
-    :root {
-      --bg: #080812;
-      --text: #f7f2ff;
-      --muted: #cfc4dd;
-      --accent: #b993ff;
-      --accent2: #ffb7d5;
-      --ok: #9effc7;
-      --bad: #ff7b9c;
+
+    :root{
+      --bg:#090914;
+      --text:#f7f2ff;
+      --muted:#d7d0e4;
+      --accent:#b993ff;
+      --accent2:#ffb7d5;
     }
 
-    * { box-sizing: border-box; }
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Georgia, 'Times New Roman', serif;
-      color: var(--text);
+    body{
       background:
-        radial-gradient(circle at 15% 20%, rgba(185,147,255,.22), transparent 28%),
-        radial-gradient(circle at 85% 12%, rgba(255,183,213,.18), transparent 25%),
-        radial-gradient(circle at 50% 85%, rgba(152,255,199,.09), transparent 30%),
-        var(--bg);
-      overflow-x: hidden;
+      radial-gradient(circle at 20% 20%, rgba(185,147,255,.2), transparent 25%),
+      radial-gradient(circle at 80% 10%, rgba(255,183,213,.15), transparent 20%),
+      var(--bg);
+
+      color:var(--text);
+      font-family:Georgia, serif;
+      overflow-x:hidden;
     }
 
-    .stars {
-      position: fixed;
-      inset: 0;
+    .stars{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.18;
       background-image:
-        radial-gradient(circle, rgba(255,255,255,.65) 1px, transparent 1px),
-        radial-gradient(circle, rgba(255,255,255,.25) 1px, transparent 1px);
-      background-size: 70px 70px, 120px 120px;
-      background-position: 0 0, 35px 45px;
-      opacity: .25;
-      pointer-events: none;
-      animation: drift 24s linear infinite;
+      radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1px);
+      background-size:50px 50px;
     }
 
-    @keyframes drift {
-      from { transform: translateY(0); }
-      to { transform: translateY(-70px); }
+    main{
+      width:min(950px,92vw);
+      margin:auto;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px 0;
     }
 
-    main {
-      position: relative;
-      z-index: 2;
-      width: min(940px, 92vw);
-      min-height: 100vh;
-      margin: 0 auto;
-      padding: 48px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .page{
+      display:none;
+      width:100%;
+      animation:appear .6s ease;
     }
 
-    .page {
-      display: none;
-      width: 100%;
-      animation: appear .75s ease both;
+    .page.active{
+      display:block;
     }
 
-    .page.active { display: block; }
-
-    @keyframes appear {
-      from { opacity: 0; transform: translateY(16px); filter: blur(5px); }
-      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    @keyframes appear{
+      from{
+        opacity:0;
+        transform:translateY(12px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
     }
 
-    .card {
-      background: linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
-      border: 1px solid rgba(255,255,255,.16);
-      border-radius: 28px;
-      padding: clamp(24px, 5vw, 52px);
-      box-shadow: 0 24px 80px rgba(0,0,0,.38);
-      backdrop-filter: blur(18px);
+    .card{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:30px;
+      padding:45px;
+      backdrop-filter:blur(14px);
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
     }
 
-    h1, h2 {
-      margin: 0 0 18px;
-      line-height: 1.05;
-      letter-spacing: -0.04em;
+    h1,h2{
+      text-align:center;
+      margin-bottom:20px;
     }
 
-    h1 { font-size: clamp(2.4rem, 8vw, 5.3rem); }
-    h2 { font-size: clamp(1.9rem, 5vw, 3.4rem); }
-
-    p {
-      font-size: clamp(1.02rem, 2.2vw, 1.24rem);
-      line-height: 1.75;
-      color: var(--muted);
-      margin: 14px 0;
+    p{
+      line-height:1.8;
+      margin-bottom:18px;
+      color:var(--muted);
+      font-size:1.1rem;
     }
 
-    .center { text-align: center; }
-    .small { font-size: .96rem; opacity: .86; }
-    .accent { color: var(--accent2); }
-    .glow { text-shadow: 0 0 26px rgba(185,147,255,.58); }
-
-    .riddle-box {
-      margin: 28px 0;
-      padding: 24px;
-      border-radius: 22px;
-      background: rgba(0,0,0,.24);
-      border: 1px dashed rgba(255,255,255,.25);
-      text-align: center;
+    .center{
+      text-align:center;
     }
 
-    .code {
-      display: block;
-      font-family: 'Courier New', monospace;
-      font-size: clamp(1.08rem, 3.6vw, 2rem);
-      letter-spacing: .09em;
-      line-height: 1.55;
-      color: white;
-      margin: 14px 0;
-      word-break: break-word;
+    .code{
+      font-family:"Courier New", monospace;
+      text-align:center;
+      font-size:1.5rem;
+      line-height:2.2;
+      margin:30px 0;
+      word-break:break-word;
     }
 
-    .ipa {
-      display: block;
-      font-size: clamp(1.25rem, 4vw, 2.35rem);
-      line-height: 1.45;
-      color: white;
-      margin: 12px 0;
+    input{
+      width:100%;
+      padding:18px;
+      border-radius:18px;
+      border:none;
+      outline:none;
+      background:rgba(255,255,255,.08);
+      color:white;
+      margin-top:20px;
+      font-size:1rem;
     }
 
-    .cipher-table-wrap {
-      overflow-x: auto;
-      margin: 22px 0;
+    button{
+      margin-top:20px;
+      padding:15px 28px;
+      border:none;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:black;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:1rem;
     }
 
-    table.cipher {
-      width: min(520px, 100%);
-      margin: 0 auto;
-      border-collapse: collapse;
-      font-family: 'Courier New', monospace;
-      background: rgba(255,255,255,.075);
-      border-radius: 16px;
-      overflow: hidden;
+    .feedback{
+      margin-top:15px;
+      text-align:center;
     }
 
-    .cipher th, .cipher td {
-      border: 1px solid rgba(255,255,255,.14);
-      padding: 10px 12px;
-      text-align: center;
-      color: white;
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:20px;
+      margin-top:30px;
     }
 
-    .cipher th {
-      color: var(--accent2);
-      background: rgba(255,255,255,.07);
+    .gallery img{
+      width:100%;
+      height:260px;
+      object-fit:cover;
+      background:white;
+      padding:10px 10px 35px;
+      border-radius:6px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
     }
 
-    input {
-      width: 100%;
-      margin-top: 12px;
-      padding: 16px 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.08);
-      color: var(--text);
-      font-size: 1.05rem;
-      outline: none;
-      font-family: inherit;
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.65);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      backdrop-filter:blur(5px);
     }
 
-    input:focus {
-      border-color: rgba(185,147,255,.7);
-      box-shadow: 0 0 0 4px rgba(185,147,255,.14);
+    .modal.active{
+      display:flex;
     }
 
-    button {
-      border: 0;
-      margin-top: 18px;
-      padding: 14px 22px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #1b1028;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      box-shadow: 0 10px 28px rgba(185,147,255,.24);
-      transition: transform .18s ease, filter .18s ease;
-      font-family: Arial, sans-serif;
+    .modal-box{
+      width:min(400px,90%);
+      background:#111827;
+      border-radius:25px;
+      padding:30px;
+      text-align:center;
     }
 
-    button:hover { transform: translateY(-2px); filter: brightness(1.05); }
-.feedback {
-      min-height: 28px;
-      margin-top: 12px;
-      font-size: 1rem;
-      font-family: Arial, sans-serif;
+    table{
+      width:100%;
+      max-width:430px;
+      margin:25px auto;
+      border-collapse:collapse;
+      font-family:"Courier New", monospace;
     }
 
-    .ok { color: var(--ok); }
-    .bad { color: var(--bad); }
-
-    .letter {
-      max-height: 62vh;
-      overflow: auto;
-      padding-right: 8px;
+    th,td{
+      border:1px solid rgba(255,255,255,.15);
+      padding:12px;
+      text-align:center;
     }
 
-    .letter::-webkit-scrollbar { width: 8px; }
-    .letter::-webkit-scrollbar-thumb { background: rgba(255,255,255,.22); border-radius: 999px; }
-
-    .polaroid-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
-      gap: 22px;
-      margin: 28px 0;
-    }
-
-    .polaroid {
-      background: white;
-      padding: 11px 11px 38px;
-      border-radius: 8px;
-      box-shadow: 0 14px 32px rgba(0,0,0,.35);
-      transform: rotate(calc(var(--r) * 1deg));
-      transition: transform .25s ease;
-    }
-
-    .polaroid:hover { transform: rotate(0deg) scale(1.03); }
-
-    .polaroid img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 4px;
-      display: block;
-    }
-  
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 99999;
-      background: rgba(0,0,0,.58);
-      backdrop-filter: blur(8px);
-      padding: 22px;
-    }
-
-    .modal-overlay.active { display: flex; }
-
-    .mini-poll {
-      width: min(420px, 92vw);
-      padding: 28px;
-      border-radius: 24px;
-      background: linear-gradient(145deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
-      border: 1px solid rgba(255,255,255,.22);
-      box-shadow: 0 24px 80px rgba(0,0,0,.45);
-      text-align: center;
-      animation: appear .45s ease both;
-    }
-
-    .mini-poll h3 {
-      margin: 0 0 10px;
-      font-size: 1.7rem;
-    }
-
-    .mini-poll p {
-      font-size: 1rem;
-      line-height: 1.55;
-    }
-
-    .poll-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-</style>
+  </style>
 </head>
-<body>
-  <audio id="bgMusic" loop>
-    <source id="musicSource" src="musica.mp3" type="audio/mpeg">
-  </audio>
-  <div class="stars"></div>
 
-  <div class="modal-overlay" id="pollModal">
-    <div class="mini-poll">
-      <h3 id="pollTitle">Você tem ctz?</h3>
-      <p id="pollText">Confirma aí rapidinho.</p>
-      <div class="poll-actions" id="pollActions">
-        <button onclick="pollNext()">tenho</button>
-        <button onclick="pollNext()">tenho sim</button>
-      </div>
+<body>
+
+<div class="stars"></div>
+
+<audio id="bgMusic" loop preload="auto"></audio>
+
+<div class="modal" id="poll">
+  <div class="modal-box">
+    <h2 id="pollTitle">Você tem ctz?</h2>
+    <p id="pollText">confirma aí</p>
+    <button onclick="nextPoll()">sim</button>
+  </div>
+</div>
+
+<main>
+
+<!-- PAGE 1 -->
+<section class="page active" id="page-1">
+
+  <div class="card">
+
+    <h1>antes de continuar...</h1>
+
+    <p class="center">
+      Você ainda lembra da nossa língua?
+    </p>
+
+    <table>
+      <tr>
+        <th></th><th>S</th><th>E</th><th>N</th><th>H</th><th>A</th>
+      </tr>
+
+      <tr>
+        <th>1</th><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td>
+      </tr>
+
+      <tr>
+        <th>2</th><td>F</td><td>G</td><td>H</td><td>I</td><td>J</td>
+      </tr>
+
+      <tr>
+        <th>3</th><td>K</td><td>L</td><td>M</td><td>N</td><td>O</td>
+      </tr>
+
+      <tr>
+        <th>4</th><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td>
+      </tr>
+
+      <tr>
+        <th>5</th><td>U</td><td>V</td><td>W</td><td>X</td><td>Y</td>
+      </tr>
+
+      <tr>
+        <th>6</th><td>Z</td><td></td><td></td><td></td><td></td>
+      </tr>
+    </table>
+
+    <div class="code">
+
+      A4S1E3E5A1S6 N1A3N1A15 A2S1 A45S1S2A2S1.<br><br>
+
+      N3S1A34 N1A3N1A15 A15 N3S6H2A4A3<br>
+
+      ____________________ S4N4S1 N3H2N3.
+
     </div>
+
+    <p class="center">
+      Complete a frase e responda usando o código.
+    </p>
+
+    <input id="secretInput" placeholder="resposta em código">
+
+    <div class="center">
+      <button onclick="checkSecret()">responder</button>
+    </div>
+
+    <div class="feedback" id="secretFeedback"></div>
+
   </div>
 
-  <main>
-    <section class="page active" id="page-1">
-      <div class="card">
-        <p class="small center">chapter 01 · nossa língua</p>
-        <h1 class="glow center">antes de continuar...</h1>
-        <p class="center">Você ainda lembra da nossa língua?</p>
+</section>
 
-        <table class="cipher-table">
-          <tr><th></th><th>S</th><th>E</th><th>N</th><th>H</th><th>A</th></tr>
-          <tr><th>1</th><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td></tr>
-          <tr><th>2</th><td>F</td><td>G</td><td>H</td><td>I</td><td>J</td></tr>
-          <tr><th>3</th><td>K</td><td>L</td><td>M</td><td>N</td><td>O</td></tr>
-          <tr><th>4</th><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td></tr>
-          <tr><th>5</th><td>U</td><td>V</td><td>W</td><td>X</td><td>Y</td></tr>
-          <tr><th>6</th><td>Z</td><td></td><td></td><td></td><td></td></tr>
-        </table>
+<!-- PAGE 2 -->
+<section class="page" id="page-2">
 
-        <div class="riddle-box">
-          <span class="code">A4S1E3E5A1S6 N1A3N1A15 A2S1 A45S1S2A2S1.</span>
-          <span class="code">N3S1A34 N1A3N1A15 A15 N3S6H2A4A3 ____________________ S4N4S1 N3H2N3.</span>
-          <p class="small">Complete a frase e responda usando o código.</p>
-          <input id="answerSecret" placeholder="resposta em código" autocomplete="off" />
-          <button onclick="checkSecret()">responder</button>
-          <div class="feedback" id="feedbackSecret"></div>
-        </div>
-      </div>
-    </section>
+  <div class="card">
 
-    <section class="page" id="page-2">
-      <div class="card">
-        <h2>opa.</h2>
-        <p>Eu sabia que tu ia conseguir KKKK.</p>
-        <p>Sei que é uma forma estranha de fazer uma cartinha.</p>
-        <p>Mas é a nossa vibe fazer um enigmazinho para o dia de hoje.</p>
-        <p>Eu queria fazer uma carta pra te dizer o quão você é importante pra mim, mas não teria forma mais legal além de enigmas né?</p>
-        <p>Te levar pra Disney? Puft, paia q só.</p>
-        <p>Então, pra começar <span class="accent">(Epic reference)</span>:</p>
+    <h1>opa.</h1>
 
-        <div class="riddle-box">
-          <p>Queria entender... o que ele é apenas?</p>
-          <span class="code">---- - ---</span>
-          <input id="answer1" placeholder="digite a resposta" autocomplete="off" />
-          <button onclick="checkAnswer1()">responder</button>
-          <div class="feedback" id="feedback1"></div>
-        </div>
-      </div>
-    </section>
+    <p>
+      Sei que é uma forma estranha de fazer uma cartinha.
+      Mas é a nossa vibe fazer enigmas.
+    </p>
 
-    <section class="page" id="page-3">
-      <div class="card">
-        <h2>correct.</h2>
-        <p class="accent">And maybe… I’m just a man too.</p>
+    <p>
+      Te levar pra Disney? paia.
+    </p>
 
-        <div class="letter">
-          <p>E eu sou apenas um homem, que conheceu uma garota incrível.</p>
-          <p>Uma garota tão forte, não de músculos, que, como uma formiga, segura pedras três vezes maiores que ela, e sem reclamar. O que eu acho uma putaria também, porque eu já falei que se precisar eu tô aqui, krai. Mas, acima de tudo, eu te admiro.</p>
-          <p>Eu te conheço pouco, pro quão eu queria conhecer. Mas te conheço o suficiente para perceber o quão foda você é.</p>
-          <p>Uma alma incrível. Um ser bondoso. Uma ótima filha, uma ótima neta, uma ótima mãe de pet e, claro, a minha melhor amiga.</p>
-        </div>
+    <p class="center">
+      Então, pra começar:
+    </p>
 
-        <div class="polaroid-grid">
-          <div class="polaroid" style="--r:-4"><img src="foto1.jpeg"></div>
-          <div class="polaroid" style="--r:3"><img src="foto2.jpeg"></div>
-          <div class="polaroid" style="--r:-2"><img src="foto3.jpeg"></div>
-        </div>
+    <div class="code">
+      ____ _ ___
+    </div>
 
-        <div class="riddle-box">
-          <p>Agora um teste de memória:</p>
-          <p><strong>Você lembra onde foi a nossa primeira conversa mais “pessoal”?</strong></p>
-          <input id="answer2" placeholder="responde do teu jeito" autocomplete="off" />
-          <button onclick="softQuiz()">continuar</button>
-          <div class="feedback" id="feedback2"></div>
-        </div>
-      </div>
-    </section>
+    <input id="answer1">
 
-    <section class="page" id="page-4">
-      <div class="card">
-        <h2>phonetics time.</h2>
-        <p>Se somos de Letras - Inglês, então esse aqui tinha que vir.</p>
-        <p>Decifra a frase em fonemas:</p>
+    <div class="center">
+      <button onclick="checkAnswer1()">responder</button>
+    </div>
 
-        <div class="polaroid-grid">
-          <div class="polaroid" style="--r:4"><img src="foto4.jpeg"></div>
-          <div class="polaroid" style="--r:-3"><img src="foto5.jpeg"></div>
-          <div class="polaroid" style="--r:2"><img src="foto6.jpeg"></div>
-        </div>
+  </div>
 
-        <div class="riddle-box">
-          <span class="ipa">/juː ɑːr maɪ feɪvərɪt θɔːt, maɪ moʊst juːzd wɜːrd ænd maɪ hæpiəst deɪ/</span>
-          <p class="small">dica: responde em inglês, na escrita normal.</p>
-          <input id="answer3" placeholder="type your answer" autocomplete="off" />
-          <button onclick="checkAnswer3()">unlock final page</button>
-          <div class="feedback" id="feedback3"></div>
-        </div>
-      </div>
-    </section>
+</section>
 
-    <section class="page" id="page-5">
-      <div class="card">
-        <h2>última página.</h2>
-        <div class="letter">
-          <p>Sei que tu já conhece o “começo” da nossa história, mas tu não sabe do prólogo dela.</p>
-          <p>Eu te conheci bem antes, pra ser sincero. Eu já tinha te visto no ônibus e na sala de aula, naquela aula inicial do Fabio Nunes, antes da minha viagem.</p>
-          <p>Quando vi você no ônibus, fiquei feliz porque teria uma pessoa pra conversar nas idas e voltas. E, sendo sincero, eu tinha te achado linda pra caralho naquela primeira vez KKKKKKKKKKK.</p>
-          <p>Mas obviamente eu nem cheguei perto de tentar falar contigo, porque bem… sou eu, né.</p>
-          <p>Até que voltei da viagem e durante um mês tentei de todas as formas me aproximar de tu, mas eu sou muito ruim nisso. Até que um dia surgiu a carona, né. Mal sabia eu que ela aceitaria um sequestro facilmente.</p>
-          <p>E sinceramente, me arrependo muito de não ter conseguido falar contigo antes.</p>
-          <p>Depois disso, vieram todos os momentos especiais para mim: a nossa conversa na meia lua, as fotos que a gente tirou na época em que estávamos combinando sem querer, a gente vivendo no nosso mundo isolado na sala, porque era eu e tu, dois retardados rindo do além e muitas vezes sem nem entender por quê.</p>
-          <p>Tu fazendo eu me sentir o Kaká falando: “POR QUE VOCÊ É TÃO GENTIL??????” O maior erro do homem é ser legal, pqp.</p>
-          <p>E é impossível não mencionar o dia em que você tava mal e não queria contar o porquê. Eu não queria te incomodar, mas também não queria só ignorar o fato. Eu estendi a mão, e você deu.</p>
-          <p>Aquele dia foi uma sensação incrível pra mim porque, mesmo sem falar nada, eu senti que ajudei de alguma forma.</p>
-          <p>E meio que naquele dia eu tive a sensação de: “Eu não quero mais ver ela desse jeito”. Isso não significa que eu não quero que você demonstre isso, só pra deixar claro. Significa que você se tornou algo tão importante ao ponto de eu não querer você mal.</p>
-          <p>E eu tô fazendo esse texto logo após você quase me matar do coração no dia 27 às 00:55, porque eu já estava querendo fazer ele fazia tempo, mas eu não sabia o que falar. Aí esse sentimento que veio me fez pensar: por que não apenas falar, né?</p>
-          <p>Continuando: sei que tô mais afastado, às vezes precisando não falar coisas pra ti, O QUE EU ODEIO, do FUNDO DO MEU CORAÇÃO. MIL PERDÕES.</p>
-          <p>Eu te conto tudo, tudo mesmo. E toda vez que não posso te contar algo, me dá uma sensação péssima, porque eu queria te contar. Você é minha melhor amiga, e eu realmente gosto de ser um livro aberto pra ti.</p>
-          <p>Mas te prometo que não é nada do tipo “tô de mal com você &gt;:(”.</p>
-          <p>Enfim, quero dizer só que, como você já sabe, você é muito importante pra mim.</p>
-          <p>Independente do que você precisar, e de como estivermos, eu sempre estarei aqui pra ti.</p>
-          <p>Eu te amo muito, muito, muito mesmo. E não há sequer um dia em que eu não sinta sua falta.</p>
-          <p>Se tu falta uma aula, é como se o queijo que eu iria botar no meu pão, e iria derreter, caísse no chão e fosse parar no Diário de um Banana.</p>
-          <p>Nunca se deixe pensar o contrário sobre o quão incrível você é, e o quão importante você é pra mim.</p>
-          <p>E se chegar a duvidar, fala comigo.</p>
-          <p class="accent"><strong>Prometo que tenho 1001 outras formas de te destacar nos meus pilares de importância.</strong></p>
-        </div>
+<!-- PAGE 3 -->
+<section class="page" id="page-3">
 
-        <div class="polaroid-grid">
-          <div class="polaroid" style="--r:-5"><img src="foto7.jpeg"></div>
-          <div class="polaroid" style="--r:3"><img src="foto8.jpeg"></div>
-          <div class="polaroid" style="--r:-2"><img src="foto9.jpeg"></div>
-          <div class="polaroid" style="--r:4"><img src="foto10.jpeg"></div>
-          <div class="polaroid" style="--r:-3"><img src="foto11.jpeg"></div>
-        </div>
-      </div>
-    </section>
-  </main>
+  <div class="card">
 
-  <script>
-    let currentTrack = '';
+    <h1>i'm just a man too</h1>
 
-    function normalize(text) {
-      return text
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')
-        .replace(/[^a-z0-9]/g, '')
-        .trim();
-    }
+    <p>
+      E eu sou apenas um homem,
+      que conheceu uma garota incrível.
+    </p>
 
-    function updateMusic(page) {
-      const music = document.getElementById('bgMusic');
-      let nextTrack = 'musica.mp3';
+    <p>
+      Uma garota tão forte,
+      que segura pedras maiores que ela
+      sem reclamar.
+    </p>
 
-      if (page === 1 || page === 2) {
-        nextTrack = 'musica.mp3';
-      } else if (page === 3 || page === 4) {
-        nextTrack = 'justaman.mp3';
-      } else if (page === 5) {
-        nextTrack = 'wellbefine.mp3';
-      }
+    <p>
+      Eu te conheço pouco pro quanto queria conhecer.
+      Mas o suficiente pra perceber o quão incrível tu é.
+    </p>
 
-      music.volume = 0.18;
+    <div class="gallery">
 
-      if (currentTrack === nextTrack) {
-        if (music.paused) music.play().catch(() => {});
-        return;
-      }
+      <img src="./foto1.jpeg">
+      <img src="./foto2.jpeg">
+      <img src="./foto3.jpeg">
+      <img src="./foto4.jpeg">
+      <img src="./foto5.jpeg">
 
-      currentTrack = nextTrack;
-      music.pause();
-      music.src = nextTrack;
-      music.load();
-      music.play().catch(() => {});
-    }
-    function currentPage() {
-      const active = document.querySelector('.page.active');
-      return Number(active.id.replace('page-', ''));
-    }
+    </div>
 
-    function goTo(n) {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      document.getElementById(`page-${n}`).classList.add('active');
-      updateMusic(n);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    <input id="answer2" placeholder="qualquer resposta">
 
-    function normalizeCode(text) {
-      return text
-        .toUpperCase()
-        .replace(/[^A-Z0-9]/g, '')
-        .trim();
-    }
+    <div class="center">
+      <button onclick="checkAnswer2()">continuar</button>
+    </div>
 
-    function checkSecret() {
-      const answer = normalizeCode(document.getElementById('answerSecret').value);
-      const feedback = document.getElementById('feedbackSecret');
-      const correct = 'H2N3S4A3N4A4S1H3A4A1';
+  </div>
 
-      if (answer === correct) {
-        feedback.innerHTML = '<span class="ok">Eu sabia que tu ia conseguir.</span>';
-        setTimeout(() => goTo(2), 1000);
-      } else {
-        feedback.innerHTML = '<span class="bad">Quase. Lembra: a resposta também precisa estar em código.</span>';
-      }
-    }
+</section>
 
-    function checkAnswer1() {
-      const answer = normalize(document.getElementById('answer1').value);
-      const feedback = document.getElementById('feedback1');
+<!-- PAGE 4 -->
+<section class="page" id="page-4">
 
-      if (answer === 'justaman') {
-        feedback.innerHTML = '<span class="ok">Correct. You still understand the references.</span>';
-        setTimeout(() => goTo(3), 1200);
-      } else {
-        feedback.innerHTML = '<span class="bad">Quase. Dica: é referência de Epic.</span>';
-      }
-    }
+  <div class="card">
 
-    function softQuiz() {
-      const answer = document.getElementById('answer2').value.trim();
-      const feedback = document.getElementById('feedback2');
+    <h1>prólogo</h1>
 
-      if (!answer) {
-        feedback.innerHTML = '<span class="bad">Nem um chutinho? 😭</span>';
-        return;
-      }
+    <p>
+      Eu te conheci bem antes pra ser sincero.
+    </p>
 
-      feedback.innerHTML = '<span class="ok">Se acertou ou não, eu deixo você decidir. Mas a próxima parte tá liberada.</span>';
-      setTimeout(() => goTo(4), 1400);
-    }
+    <p>
+      Já tinha te visto no ônibus e na sala.
+    </p>
 
-    function checkAnswer3() {
-      const answer = document.getElementById('answer3').value.trim();
-      const feedback = document.getElementById('feedback3');
+    <p>
+      E sinceramente?
+      Ainda bem que aconteceu aquela carona/sequestro.
+    </p>
 
-      if (!answer) {
-        feedback.innerHTML = '<span class="bad">Escreve alguma coisa antes 😭</span>';
-        return;
-      }
+    <div class="gallery">
 
-      feedback.innerHTML = '<span class="ok">Ok, vou confiar.</span>';
-      window.pollStep = 1;
-      openPoll();
-    }
+      <img src="./foto6.jpeg">
+      <img src="./foto7.jpeg">
+      <img src="./foto8.jpeg">
+      <img src="./foto9.jpeg">
+      <img src="./foto10.jpeg">
+      <img src="./foto11.jpeg">
 
-    function openPoll() {
-      document.getElementById('pollModal').classList.add('active');
-      updatePoll();
-    }
+    </div>
 
-    function updatePoll() {
-      const title = document.getElementById('pollTitle');
-      const text = document.getElementById('pollText');
-      const actions = document.getElementById('pollActions');
+    <div class="code">
+      /juː ɑːr maɪ feɪvərɪt θɔːt, maɪ moʊst juːzd wɜːrd ænd maɪ hæpiəst deɪ/
+    </div>
 
-      if (window.pollStep === 1) {
-        title.innerText = 'Você tem ctz?';
-        text.innerText = 'Tipo, certeza mesmo da resposta?';
-        actions.innerHTML = '<button onclick="pollNext()">sim, tenho</button><button onclick="pollNext()">acho que sim</button>';
-        return;
-      }
+    <input id="answer3">
 
-      if (window.pollStep === 2) {
-        title.innerText = 'Ctz msm?';
-        text.innerText = 'Última confirmação, prometo.';
-        actions.innerHTML = '<button onclick="pollNext()">certeza msm</button><button onclick="pollNext()">vai logo</button>';
-        return;
-      }
+    <div class="center">
+      <button onclick="checkAnswer3()">responder</button>
+    </div>
 
-      title.innerText = 'Que bom.';
-      text.innerText = 'Pq eu n consegui configurar pra ele aceitar a resposta correta, mas vc é inteligente, confio em vc.';
-      actions.innerHTML = '<button onclick="goToFinalFromPoll()">continuar</button>';
-    }
+  </div>
 
-    function pollNext() {
-      window.pollStep += 1;
-      updatePoll();
-    }
+</section>
 
-    function goToFinalFromPoll() {
-      document.getElementById('pollModal').classList.remove('active');
-      goTo(5);
-    }
+<!-- PAGE 5 -->
+<section class="page" id="page-5">
 
-    document.querySelectorAll('input').forEach(input => {
-      input.addEventListener('keydown', event => {
-        if (event.key === 'Enter') {
-          if (input.id === 'answerSecret') checkSecret();
-          if (input.id === 'answer1') checkAnswer1();
-          if (input.id === 'answer2') softQuiz();
-          if (input.id === 'answer3') checkAnswer3();
-        }
-      });
-    });
-  </script>
+  <div class="card">
+
+    <h1>fim?</h1>
+
+    <p>
+      Independente de qualquer coisa,
+      tu é uma das pessoas mais importantes da minha vida.
+    </p>
+
+    <p>
+      E eu sempre vou estar aqui pra ti.
+    </p>
+
+    <p>
+      Eu te amo muito.
+    </p>
+
+  </div>
+
+</section>
+
+</main>
+
+<script>
+
+let pollStep = 1;
+
+function normalize(text){
+  return text
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'')
+  .replace(/\s+/g,'')
+  .trim();
+}
+
+function normalizeCode(text){
+  return text
+  .toUpperCase()
+  .replace(/[^A-Z0-9]/g,'')
+  .trim();
+}
+
+function goTo(page){
+
+  document.querySelectorAll('.page')
+  .forEach(p => p.classList.remove('active'));
+
+  document.getElementById(`page-${page}`)
+  .classList.add('active');
+
+  updateMusic(page);
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+}
+
+function updateMusic(page){
+
+  const music = document.getElementById('bgMusic');
+
+  let nextTrack = './musica.mp3';
+
+  if(page === 1 || page === 2){
+
+    nextTrack = './musica.mp3';
+
+  }
+
+  else if(page === 3 || page === 4){
+
+    nextTrack = './justaman.mp3';
+
+  }
+
+  else if(page === 5){
+
+    nextTrack = './wellbefine.mp3';
+
+  }
+
+  music.volume = 0.18;
+
+  if(music.getAttribute('src') === nextTrack){
+
+    music.play().catch(()=>{});
+    return;
+
+  }
+
+  music.pause();
+
+  music.setAttribute('src', nextTrack);
+
+  music.load();
+
+  setTimeout(()=>{
+
+    music.play().catch(()=>{});
+
+  },200);
+
+}
+
+function checkSecret(){
+
+  updateMusic(1);
+
+  const answer = normalizeCode(
+    document.getElementById('secretInput').value
+  );
+
+  if(answer === 'H2N3S4A3N4A4S1H3A4A1'){
+
+    document.getElementById('secretFeedback')
+    .innerHTML = 'eu sabia que tu ia conseguir';
+
+    setTimeout(()=>{
+      goTo(2);
+    },1000);
+
+  }
+
+  else{
+
+    document.getElementById('secretFeedback')
+    .innerHTML = 'quase';
+
+  }
+
+}
+
+function checkAnswer1(){
+
+  const answer = normalize(
+    document.getElementById('answer1').value
+  );
+
+  if(answer === 'justaman'){
+
+    goTo(3);
+
+  }
+
+}
+
+function checkAnswer2(){
+
+  goTo(4);
+
+}
+
+function checkAnswer3(){
+
+  document.getElementById('poll')
+  .classList.add('active');
+
+}
+
+function nextPoll(){
+
+  const title = document.getElementById('pollTitle');
+  const text = document.getElementById('pollText');
+
+  if(pollStep === 1){
+
+    title.innerHTML = 'ctz msm?';
+    text.innerHTML = 'última confirmação';
+
+    pollStep++;
+    return;
+
+  }
+
+  title.innerHTML = 'que bom';
+
+  text.innerHTML =
+  'pq eu n consegui configurar pra aceitar a resposta correta, mas confio em vc';
+
+  setTimeout(()=>{
+
+    document.getElementById('poll')
+    .classList.remove('active');
+
+    goTo(5);
+
+  },2000);
+
+}
+
+</script>
+
 </body>
 </html>
