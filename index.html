@@ -3,45 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Uma cartinha em forma de enigma</title>
+  <title>dia 29</title>
 
   <style>
     :root {
       --bg: #090914;
+      --card: rgba(255, 255, 255, 0.08);
       --text: #f7f2ff;
-      --muted: #c9bfd8;
+      --muted: #d7d0e4;
       --accent: #b993ff;
-      --accent-2: #ffb7d5;
-      --danger: #ff7b9c;
+      --accent2: #ffb7d5;
       --ok: #98ffc7;
+      --bad: #ff7b9c;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
-      margin: 0;
       min-height: 100vh;
-      font-family: Georgia, 'Times New Roman', serif;
-      color: var(--text);
       background:
-        radial-gradient(circle at 15% 20%, rgba(185, 147, 255, 0.22), transparent 30%),
-        radial-gradient(circle at 85% 10%, rgba(255, 183, 213, 0.18), transparent 25%),
-        radial-gradient(circle at 50% 85%, rgba(152, 255, 199, 0.10), transparent 28%),
+        radial-gradient(circle at 15% 20%, rgba(185,147,255,.22), transparent 30%),
+        radial-gradient(circle at 85% 10%, rgba(255,183,213,.18), transparent 25%),
+        radial-gradient(circle at 50% 85%, rgba(152,255,199,.08), transparent 28%),
         var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
       overflow-x: hidden;
     }
 
     .stars {
       position: fixed;
       inset: 0;
+      pointer-events: none;
+      opacity: .28;
       background-image:
         radial-gradient(circle, rgba(255,255,255,.7) 1px, transparent 1px),
         radial-gradient(circle, rgba(255,255,255,.35) 1px, transparent 1px);
       background-size: 70px 70px, 120px 120px;
       background-position: 0 0, 35px 45px;
-      pointer-events: none;
-      opacity: .28;
-      animation: drift 20s linear infinite;
+      animation: drift 22s linear infinite;
     }
 
     @keyframes drift {
@@ -50,13 +54,13 @@
     }
 
     main {
-      width: min(920px, 92vw);
+      width: min(950px, 92vw);
       min-height: 100vh;
       margin: 0 auto;
+      padding: 48px 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 48px 0;
       position: relative;
       z-index: 2;
     }
@@ -64,21 +68,23 @@
     .page {
       display: none;
       width: 100%;
-      animation: appear .8s ease both;
+      animation: appear .75s ease both;
     }
 
-    .page.active { display: block; }
+    .page.active {
+      display: block;
+    }
 
     @keyframes appear {
-      from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+      from { opacity: 0; transform: translateY(14px); filter: blur(5px); }
       to { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
 
     .card {
+      padding: clamp(24px, 5vw, 52px);
+      border-radius: 28px;
       background: linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.055));
       border: 1px solid rgba(255,255,255,.16);
-      border-radius: 28px;
-      padding: clamp(24px, 5vw, 52px);
       box-shadow: 0 24px 80px rgba(0,0,0,.35);
       backdrop-filter: blur(18px);
     }
@@ -87,49 +93,76 @@
       margin: 0 0 18px;
       line-height: 1.05;
       letter-spacing: -0.04em;
+      text-align: center;
     }
 
-    h1 { font-size: clamp(2.4rem, 8vw, 5.6rem); }
-    h2 { font-size: clamp(1.9rem, 5vw, 3.4rem); }
+    h1 { font-size: clamp(2.2rem, 6vw, 4.6rem); }
+    h2 { font-size: clamp(1.8rem, 4vw, 3.2rem); }
 
     p {
-      font-size: clamp(1.02rem, 2.2vw, 1.25rem);
+      font-size: clamp(1.02rem, 2.2vw, 1.18rem);
       line-height: 1.75;
       color: var(--muted);
       margin: 14px 0;
     }
 
-    .small { font-size: .96rem; opacity: .85; }
     .center { text-align: center; }
-    .accent { color: var(--accent-2); }
+    .small { font-size: .95rem; opacity: .86; }
+    .accent { color: var(--accent2); }
     .glow { text-shadow: 0 0 24px rgba(185,147,255,.65); }
 
     .riddle-box {
       margin: 28px 0;
-      padding: 26px;
+      padding: 24px;
       border-radius: 22px;
       background: rgba(0,0,0,.24);
       border: 1px dashed rgba(255,255,255,.26);
       text-align: center;
     }
 
-    .code {
+    .code, .ipa {
       display: block;
-      font-family: 'Courier New', monospace;
-      font-size: clamp(1.2rem, 4vw, 2.2rem);
-      letter-spacing: .10em;
-      line-height: 1.7;
-      color: #ffffff;
-      margin: 12px 0;
+      color: white;
+      margin: 14px 0;
       word-break: break-word;
     }
 
+    .code {
+      font-family: "Courier New", monospace;
+      font-size: clamp(1.08rem, 4vw, 2rem);
+      letter-spacing: .08em;
+      line-height: 1.55;
+      text-align: center;
+    }
+
     .ipa {
-      display: block;
-      font-size: clamp(1.15rem, 4vw, 2.1rem);
-      line-height: 1.45;
-      color: #ffffff;
-      margin: 12px 0;
+      font-size: clamp(1.12rem, 3vw, 1.9rem);
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    .cipher-table {
+      width: 100%;
+      max-width: 430px;
+      margin: 24px auto;
+      border-collapse: collapse;
+      font-family: "Courier New", monospace;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(0,0,0,.18);
+    }
+
+    .cipher-table th,
+    .cipher-table td {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.15);
+      text-align: center;
+      color: var(--text);
+    }
+
+    .cipher-table th {
+      color: var(--accent2);
+      background: rgba(255,255,255,.06);
     }
 
     input {
@@ -155,7 +188,7 @@
       margin-top: 18px;
       padding: 14px 22px;
       border-radius: 999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
       color: #1b1028;
       font-weight: 700;
       font-size: 1rem;
@@ -165,17 +198,21 @@
       font-family: Arial, sans-serif;
     }
 
-    button:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
 
     .feedback {
       min-height: 28px;
       margin-top: 12px;
       font-size: 1rem;
       font-family: Arial, sans-serif;
+      text-align: center;
     }
 
     .ok { color: var(--ok); }
-    .bad { color: var(--danger); }
+    .bad { color: var(--bad); }
 
     .letter {
       max-height: 62vh;
@@ -184,29 +221,9 @@
     }
 
     .letter::-webkit-scrollbar { width: 8px; }
-    .letter::-webkit-scrollbar-thumb { background: rgba(255,255,255,.22); border-radius: 999px; }
-
-    .cipher-table {
-      width: 100%;
-      max-width: 430px;
-      margin: 24px auto;
-      border-collapse: collapse;
-      font-family: 'Courier New', monospace;
-      overflow: hidden;
-      border-radius: 16px;
-      background: rgba(0,0,0,.2);
-    }
-
-    .cipher-table th, .cipher-table td {
-      padding: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      text-align: center;
-      color: var(--text);
-    }
-
-    .cipher-table th {
-      color: var(--accent-2);
-      background: rgba(255,255,255,.06);
+    .letter::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.22);
+      border-radius: 999px;
     }
 
     .polaroid-grid {
@@ -225,7 +242,9 @@
       transition: transform .25s ease;
     }
 
-    .polaroid:hover { transform: rotate(0deg) scale(1.03); }
+    .polaroid:hover {
+      transform: rotate(0deg) scale(1.03);
+    }
 
     .polaroid img {
       width: 100%;
@@ -247,7 +266,9 @@
       padding: 22px;
     }
 
-    .modal-overlay.active { display: flex; }
+    .modal-overlay.active {
+      display: flex;
+    }
 
     .mini-poll {
       width: min(420px, 92vw);
@@ -282,7 +303,6 @@
 
 <body>
   <audio id="bgMusic" loop preload="auto"></audio>
-
   <div class="stars"></div>
 
   <div class="modal-overlay" id="pollModal">
@@ -290,7 +310,8 @@
       <h3 id="pollTitle">Você tem ctz?</h3>
       <p id="pollText">Confirma aí rapidinho.</p>
       <div class="poll-actions" id="pollActions">
-        <button onclick="pollNext()">tenho</button>
+        <button onclick="pollNext()">sim, tenho</button>
+        <button onclick="pollNext()">acho que sim</button>
       </div>
     </div>
   </div>
@@ -356,9 +377,9 @@
         </div>
 
         <div class="polaroid-grid">
-          <div class="polaroid" style="--r:-4"><img src="./foto1.jpeg" alt=""></div>
-          <div class="polaroid" style="--r:3"><img src="./foto2.jpeg" alt=""></div>
-          <div class="polaroid" style="--r:-2"><img src="./foto3.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:-4"><img src="foto1.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:3"><img src="foto2.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:-2"><img src="foto3.jpeg" alt=""></div>
         </div>
 
         <div class="riddle-box">
@@ -378,9 +399,9 @@
         <p>Decifra a frase em fonemas:</p>
 
         <div class="polaroid-grid">
-          <div class="polaroid" style="--r:4"><img src="./foto4.jpeg" alt=""></div>
-          <div class="polaroid" style="--r:-3"><img src="./foto5.jpeg" alt=""></div>
-          <div class="polaroid" style="--r:2"><img src="./foto6.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:4"><img src="foto4.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:-3"><img src="foto5.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:2"><img src="foto6.jpeg" alt=""></div>
         </div>
 
         <div class="riddle-box">
@@ -423,53 +444,53 @@
         </div>
 
         <div class="polaroid-grid">
-          <div class="polaroid" style="--r:-5"><img src="./foto7.jpeg" alt=""></div>
-          <div class="polaroid" style="--r:3"><img src="./foto8.jpeg" alt=""></div>
-          <div class="polaroid" style="--r:-2"><img src="./foto9.jpeg" alt=""></div>
-          <div class="polaroid" style="--r:4"><img src="./foto10.jpeg" alt=""></div>
-          <div class="polaroid" style="--r:-3"><img src="./foto11.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:-5"><img src="foto7.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:3"><img src="foto8.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:-2"><img src="foto9.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:4"><img src="foto10.jpeg" alt=""></div>
+          <div class="polaroid" style="--r:-3"><img src="foto11.jpeg" alt=""></div>
         </div>
       </div>
     </section>
   </main>
 
   <script>
-    let currentTrack = '';
+    let currentTrack = "";
     let pollStep = 1;
 
     function normalize(text) {
       return text
         .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9 ]/g, '')
-        .replace(/\s+/g, ' ')
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9 ]/g, "")
+        .replace(/\s+/g, " ")
         .trim();
     }
 
     function normalizeCode(text) {
       return text
         .toUpperCase()
-        .replace(/[^A-Z0-9]/g, '')
+        .replace(/[^A-Z0-9]/g, "")
         .trim();
     }
 
     function updateMusic(page) {
-      const music = document.getElementById('bgMusic');
-      let nextTrack = './musica.mp3';
+      const music = document.getElementById("bgMusic");
+      let nextTrack = "./musica.mp3";
 
       if (page === 1 || page === 2) {
-        nextTrack = './musica.mp3';
+        nextTrack = "./musica.mp3";
       } else if (page === 3 || page === 4) {
-        nextTrack = './justaman.MP3';
+        nextTrack = "./justaman.MP3";
       } else if (page === 5) {
-        nextTrack = './wellbefine.MP3';
+        nextTrack = "./wellbefine.MP3";
       }
 
       music.volume = 0.18;
 
       if (currentTrack === nextTrack) {
-        music.play().catch(() => {});
+        if (music.paused) music.play().catch(() => {});
         return;
       }
 
@@ -484,18 +505,18 @@
     }
 
     function goTo(n) {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      document.getElementById(`page-${n}`).classList.add('active');
+      document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+      document.getElementById(`page-${n}`).classList.add("active");
       updateMusic(n);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function checkSecret() {
       updateMusic(1);
 
-      const answer = normalizeCode(document.getElementById('answerSecret').value);
-      const feedback = document.getElementById('feedbackSecret');
-      const correct = 'H2N3S4A3N4A4S1H3A4A1';
+      const answer = normalizeCode(document.getElementById("answerSecret").value);
+      const feedback = document.getElementById("feedbackSecret");
+      const correct = "H2N3S4A3N4A4S1H3A4A1";
 
       if (answer === correct) {
         feedback.innerHTML = '<span class="ok">Eu sabia que tu ia conseguir.</span>';
@@ -506,10 +527,10 @@
     }
 
     function checkAnswer1() {
-      const answer = normalize(document.getElementById('answer1').value);
-      const feedback = document.getElementById('feedback1');
+      const answer = normalize(document.getElementById("answer1").value);
+      const feedback = document.getElementById("feedback1");
 
-      if (answer === 'just a man') {
+      if (answer === "just a man") {
         feedback.innerHTML = '<span class="ok">Correct. You still understand the references.</span>';
         setTimeout(() => goTo(3), 1000);
       } else {
@@ -518,8 +539,8 @@
     }
 
     function softQuiz() {
-      const feedback = document.getElementById('feedback2');
-      const answer = normalize(document.getElementById('answer2').value);
+      const answer = document.getElementById("answer2").value.trim();
+      const feedback = document.getElementById("feedback2");
 
       if (!answer) {
         feedback.innerHTML = '<span class="bad">Nem um chutinho? 😭</span>';
@@ -531,8 +552,8 @@
     }
 
     function checkAnswer3() {
-      const answer = document.getElementById('answer3').value.trim();
-      const feedback = document.getElementById('feedback3');
+      const answer = document.getElementById("answer3").value.trim();
+      const feedback = document.getElementById("feedback3");
 
       if (!answer) {
         feedback.innerHTML = '<span class="bad">Escreve alguma coisa antes 😭</span>';
@@ -545,31 +566,31 @@
     }
 
     function openPoll() {
-      document.getElementById('pollModal').classList.add('active');
+      document.getElementById("pollModal").classList.add("active");
       updatePoll();
     }
 
     function updatePoll() {
-      const title = document.getElementById('pollTitle');
-      const text = document.getElementById('pollText');
-      const actions = document.getElementById('pollActions');
+      const title = document.getElementById("pollTitle");
+      const text = document.getElementById("pollText");
+      const actions = document.getElementById("pollActions");
 
       if (pollStep === 1) {
-        title.innerText = 'Você tem ctz?';
-        text.innerText = 'Tipo, certeza mesmo da resposta?';
+        title.innerText = "Você tem ctz?";
+        text.innerText = "Tipo, certeza mesmo da resposta?";
         actions.innerHTML = '<button onclick="pollNext()">sim, tenho</button><button onclick="pollNext()">acho que sim</button>';
         return;
       }
 
       if (pollStep === 2) {
-        title.innerText = 'Ctz msm?';
-        text.innerText = 'Última confirmação, prometo.';
+        title.innerText = "Ctz msm?";
+        text.innerText = "Última confirmação, prometo.";
         actions.innerHTML = '<button onclick="pollNext()">certeza msm</button><button onclick="pollNext()">vai logo</button>';
         return;
       }
 
-      title.innerText = 'Que bom.';
-      text.innerText = 'Pq eu n consegui configurar pra ele aceitar a resposta correta, mas vc é inteligente, confio em vc.';
+      title.innerText = "Que bom.";
+      text.innerText = "Pq eu n consegui configurar pra ele aceitar a resposta correta, mas vc é inteligente, confio em vc.";
       actions.innerHTML = '<button onclick="goToFinalFromPoll()">continuar</button>';
     }
 
@@ -579,17 +600,17 @@
     }
 
     function goToFinalFromPoll() {
-      document.getElementById('pollModal').classList.remove('active');
+      document.getElementById("pollModal").classList.remove("active");
       goTo(5);
     }
 
-    document.querySelectorAll('input').forEach(input => {
-      input.addEventListener('keydown', event => {
-        if (event.key === 'Enter') {
-          if (input.id === 'answerSecret') checkSecret();
-          if (input.id === 'answer1') checkAnswer1();
-          if (input.id === 'answer2') softQuiz();
-          if (input.id === 'answer3') checkAnswer3();
+    document.querySelectorAll("input").forEach(input => {
+      input.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          if (input.id === "answerSecret") checkSecret();
+          if (input.id === "answer1") checkAnswer1();
+          if (input.id === "answer2") softQuiz();
+          if (input.id === "answer3") checkAnswer3();
         }
       });
     });
